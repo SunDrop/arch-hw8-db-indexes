@@ -15,7 +15,6 @@ services:
       - ./src:/app
     environment:
       PROJECT_NAME: ${PROJECT_NAME}
-      REDIS_HOST: ${REDIS_HOST}
       DB_HOST: ${DB_HOST}
       DB_DATABASE: ${DB_DATABASE}
       DB_USERNAME: ${DB_USERNAME}
