@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  php:
+    container_name: ${PROJECT_NAME}_php
+    build:
+      context: ./php
+    depends_on:
+      - db
+      - telegraf
+      - grafana
+    links:
+      - db
+    volumes:
+      - ./src:/app
+    environment:
+      PROJECT_NAME: ${PROJECT_NAME}
+      REDIS_HOST: ${REDIS_HOST}
+      DB_HOST: ${DB_HOST}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: ${DB_PORT}
+      DATABASE_URL: ${DATABASE_URL}
+
+  db:
+    container_name: ${PROJECT_NAME}_db
+    image: mysql:latest
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - '${PROJECT_HOST}:${DB_PORT}:${DB_PORT}'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+
+  telegraf:
+    container_name: ${PROJECT_NAME}_telegraf
+    image: telegraf:1.18-alpine
+    user: root
+    entrypoint: "telegraf"
+    volumes:
+      - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - influxdb
+    ports:
+      - '${PROJECT_HOST}:${TELEGRAF_PORT}:${TELEGRAF_PORT}/udp'
+
+  influxdb:
+    container_name: ${PROJECT_NAME}_influxdb
+    image: influxdb:1.8-alpine
+    ports:
+      - '${PROJECT_HOST}:8086:8086'
+    volumes:
+      - ./:/imports
+      - influxdb_data:/var/lib/influxdb
+
+  grafana:
+    container_name: ${PROJECT_NAME}_grafana
+    image: grafana/grafana:8.0.2
+    depends_on:
+      - influxdb
+    ports:
+      - '${PROJECT_HOST}:3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./grafana/dashboards/:/var/lib/grafana/dashboards/
+
+volumes:
+  db-data: { }
+  grafana_data: { }
+  influxdb_data: { }
