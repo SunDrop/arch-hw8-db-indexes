@@ -17,7 +17,7 @@ rebuild:
 	@echo "\033[32mRebuild containers...\033[0m"
 	docker-compose build --force-rm --no-cache
 
-app:
+php:
 	@echo "\033[32mEntering into php container...\033[0m"
 	docker-compose exec php bash
 
