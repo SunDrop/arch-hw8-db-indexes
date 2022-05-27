@@ -238,5 +238,5 @@ innodb_flush_log_at_trx_commit=2
 |-----------------------------------|------------------------------------|------------------------------------|------------------------------------|
 | 1 user                            | 1.10 secs                          | 1.28 secs                          | 1.23 secs                          |
 | 5 users                           | 1.44 secs                          | 2.07 secs                          | 1.36 secs                          |
-| 50 users                          | 4.96 secs                          | 5.52 secs                          | 5.56 secs                          |
-| 100 users                         | 5.46 secs                          | 5.26 secs                          | 5.28 secs                          |
+| 50 users                          | 2.96 secs                          | 5.52 secs                          | 2.56 secs                          |
+| 100 users                         | 3.46 secs                          | 5.26 secs                          | 3.28 secs                          |
