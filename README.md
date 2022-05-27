@@ -220,3 +220,23 @@ possible_keys: i_birthday_hash
 * Hash index provides fast work with = or <> operations
 * Hash does not work with ranges, in which case we are scanning virtually the entire table.
 * BTree index works like log(N) to find the value in the key, compared to iterating over the entire table (N)
+
+# innodb_flush_log_at_trx_commit
+```mysql
+SET GLOBAL innodb_flush_log_at_trx_commit=0;
+SET GLOBAL innodb_flush_log_at_trx_commit=1;
+SET GLOBAL innodb_flush_log_at_trx_commit=2;
+```
+```my.cnf
+# Custom config should go here
+innodb_flush_log_at_trx_commit=0
+innodb_flush_log_at_trx_commit=1
+innodb_flush_log_at_trx_commit=2
+```
+
+| Operations per sec (2500 inserts) | innodb_flush_log_at_trx_commit = 0 | innodb_flush_log_at_trx_commit = 1 | innodb_flush_log_at_trx_commit = 2 |
+|-----------------------------------|------------------------------------|------------------------------------|------------------------------------|
+| 1 user                            | 1.10 secs                          | 1.28 secs                          | 1.23 secs                          |
+| 5 users                           | 1.44 secs                          | 2.07 secs                          | 1.36 secs                          |
+| 50 users                          | 4.96 secs                          | 5.52 secs                          | 5.56 secs                          |
+| 100 users                         | 5.46 secs                          | 5.26 secs                          | 5.28 secs                          |
