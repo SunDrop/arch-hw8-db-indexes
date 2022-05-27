@@ -1,15 +1,38 @@
 <?php
 
-function createStructure(\PDO $pdo): bool|int
+function createStructure(\PDO $pdo): void
 {
-    return $pdo->exec(
+    $pdo->exec(
         '
             CREATE TABLE IF NOT EXISTS user_base
             (
                 id int auto_increment primary key,
                 username varchar(20) null,
                 birthday datetime null
-            );
+            ) ENGINE=InnoDB;
+        '
+    );
+
+    $pdo->exec(
+        '
+create table user_test
+(
+    id             int auto_increment
+        primary key,
+    username       varchar(20) null,
+    birthday       datetime    null,
+    birthday_btree datetime    null,
+    birthday_hash  datetime    null
+)
+    engine = MEMORY;
+
+create index i_birthday_hash
+    on user_test (birthday_hash)
+    using hash;
+
+create index i_birthday_btree
+    on user_test (birthday_btree)
+    using btree;
         '
     );
 }
